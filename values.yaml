@@ -1,0 +1,5 @@
+piholeFQDN: "pihole.domain.tld"
+hostconfpath: "/opt/pihole/etc/"
+hostdnsmpath: "/opt/pihole/dnsm/"
+timezone: "America/Chicago"
+webpass: "changeme"

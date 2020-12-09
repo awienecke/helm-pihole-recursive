@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+spec:
+  template:
+    metadata:
+      name: pihole-app
+      labels: 
+        name: pihole-app
+    spec:
+      volumes:
+        - name: etcvol
+          persistentVolumeClaim:
+            claimName: pihole-etc-claim
+        - name: dnsmvol
+          persistentVolumeClaim:
+            claimName: pihole-dnsm-claim
+      containers:
+      - name: pihole
+        image: pihole/pihole
+        env:
+        - name: TZ
+          value: "{{ .Values.timezone }}"
+        - name: WEBPASSWORD
+          value: "{{ .Values.webpass }}"
+        - name: DNS1
+          #value: "10.43.241.205"
+          value: "$(host unbound-service | awk '{print $4}')"
+        - name: DNS2
+          value: "$(host unbound-service | awk '{print $4}')"
+        - name: VIRTUAL_HOST
+          value: "{{ .Values.piholeFQDN }}"
+        volumeMounts:
+        - name: etcvol
+          mountPath: "/etc/pihole/"
+        - name: dnsmvol
+          mountPath: "/etc/dnsmasq.d/"
+  replicas: 1 
+  selector:
+    matchLabels:
+      name: pihole-app

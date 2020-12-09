@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unbound
+spec:
+  template:
+    metadata:
+      name: unbound
+      labels: 
+        name: unbound
+    spec:
+      volumes:
+        - name: unbound-config
+          configMap:
+            name: piholeconfig
+      containers:
+      - name: unbound
+        image: mvance/unbound:latest
+        volumeMounts:
+        - name: unbound-config
+          mountPath: "/opt/unbound/etc/unbound/pi-hole.conf"
+          subPath: pi-hole.conf
+  replicas: 1 
+  selector:
+    matchLabels:
+      name: unbound
+
