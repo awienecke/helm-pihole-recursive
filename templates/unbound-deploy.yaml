@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: ReplicaSet
 metadata:
   name: unbound
 spec:
@@ -15,11 +15,12 @@ spec:
             name: piholeconfig
       containers:
       - name: unbound
-        image: mvance/unbound:latest
+        image: mvance/unbound
         volumeMounts:
         - name: unbound-config
           mountPath: "/opt/unbound/etc/unbound/pi-hole.conf"
           subPath: pi-hole.conf
+        imagePullPolicy: IfNotPresent
   replicas: 1 
   selector:
     matchLabels:

@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: ReplicaSet
 metadata:
   name: pihole
 spec:
@@ -25,10 +25,9 @@ spec:
         - name: WEBPASSWORD
           value: "{{ .Values.webpass }}"
         - name: DNS1
-          #value: "10.43.241.205"
-          value: "$(host unbound-service | awk '{print $4}')"
+          value: $(host unbound-service | awk '{print $4}')
         - name: DNS2
-          value: "$(host unbound-service | awk '{print $4}')"
+          value: $(host unbound-service | awk '{print $4}')
         - name: VIRTUAL_HOST
           value: "{{ .Values.piholeFQDN }}"
         volumeMounts:
@@ -36,6 +35,7 @@ spec:
           mountPath: "/etc/pihole/"
         - name: dnsmvol
           mountPath: "/etc/dnsmasq.d/"
+        imagePullPolicy: IfNotPresent
   replicas: 1 
   selector:
     matchLabels:
