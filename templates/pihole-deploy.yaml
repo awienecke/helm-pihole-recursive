@@ -18,16 +18,19 @@ spec:
             claimName: pihole-dnsm-claim
       containers:
       - name: pihole
-        image: pihole/pihole
+        image: pihole/pihole:{{ .Values.imgver }}
         env:
         - name: TZ
           value: "{{ .Values.timezone }}"
         - name: WEBPASSWORD
           value: "{{ .Values.webpass }}"
-        - name: DNS1
-          value: $(host unbound-service | awk '{print $4}')
-        - name: DNS2
-          value: $(host unbound-service | awk '{print $4}')
+        - name: PIHOLE_DNS_
+          value: "{{ .Values.phdns }}"
+# DEPRECATED
+#        - name: DNS1
+#          value: "{{ .Values.dns1 }}"
+#        - name: DNS2
+#          value: "{{ .Values.dns2 }}"
         - name: VIRTUAL_HOST
           value: "{{ .Values.piholeFQDN }}"
         volumeMounts:
